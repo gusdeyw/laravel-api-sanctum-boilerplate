@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UserPublicResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -23,7 +24,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Users retrieved successfully',
-            'data' => UserResource::collection($users)
+            'data' => UserPublicResource::collection($users)->response()->getData()
         ]);
     }
 
@@ -53,7 +54,7 @@ class UserController extends Controller
     {
         return response()->json([
             'message' => 'User retrieved successfully',
-            'data' => new UserResource($user)
+            'data' => new UserPublicResource($user)
         ]);
     }
 
@@ -90,8 +91,6 @@ class UserController extends Controller
 
         $user->delete();
 
-        return response()->json([
-            'message' => 'User deleted successfully'
-        ]);
+        return response()->json(null, 204);
     }
 }
