@@ -322,12 +322,6 @@ php artisan test:weather-endpoint --user=1
 - **Environment Variables**: Pre-configured with authentication token management
 - **Test Scripts**: Automated testing for each endpoint
 
-### Email Setup Guide
-- **Gmail Configuration**: [GMAIL_TESTING_GUIDE.md](./GMAIL_TESTING_GUIDE.md)
-- **SMTP Setup**: Step-by-step Gmail configuration
-- **App Passwords**: Security setup for Gmail integration
-- **Testing**: Email testing procedures and troubleshooting
-
 ### Key Files & Directories
 ```
 ├── app/
