@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,4 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User CRUD routes
     Route::apiResource('users', UserController::class);
+
+    // Posts CRUD routes
+    Route::apiResource('posts', PostController::class);
 });
