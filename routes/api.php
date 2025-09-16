@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\WeatherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,4 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Posts CRUD routes
     Route::apiResource('posts', PostController::class);
+
+    // Weather routes
+    Route::get('/weather', [WeatherController::class, 'getCurrentWeather']);
+    Route::delete('/weather/cache', [WeatherController::class, 'clearCache']);
 });
