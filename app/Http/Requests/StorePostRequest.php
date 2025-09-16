@@ -25,6 +25,7 @@ class StorePostRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'datepost' => 'required|date_format:Y-m-d H:i:s',
+            'status' => 'nullable|string|in:draft,published',
         ];
     }
 

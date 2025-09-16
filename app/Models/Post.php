@@ -19,6 +19,7 @@ class Post extends Model
         'description',
         'datepost',
         'user_id',
+        'status',
     ];
 
     /**

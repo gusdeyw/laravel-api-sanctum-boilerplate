@@ -46,7 +46,7 @@ class PostsApiTest extends TestCase
                     'title',
                     'description',
                     'status',
-                    'user_id',
+                    'datepost',
                     'created_at',
                     'updated_at',
                     'user' => [
@@ -165,7 +165,7 @@ class PostsApiTest extends TestCase
                 'title',
                 'description',
                 'status',
-                'user_id',
+                'datepost',
                 'created_at',
                 'updated_at',
                 'user'
@@ -176,7 +176,7 @@ class PostsApiTest extends TestCase
             'data' => [
                 'id' => $post->id,
                 'title' => 'Specific Post Title',
-                'description' => 'Specific post content'
+                'description' => 'Specific post description'
             ]
         ]);
     }
@@ -368,7 +368,8 @@ class PostsApiTest extends TestCase
 
         $postData = [
             'title' => 'Test Post Title',
-            'description' => 'This is the content of the test post.'
+            'description' => 'This is the content of the test post.',
+            'datepost' => now()->format('Y-m-d H:i:s')
             // status not provided
         ];
 
@@ -419,7 +420,7 @@ class PostsApiTest extends TestCase
         $response->assertJsonCount(2, 'data');
 
         foreach ($response->json('data') as $post) {
-            $this->assertEquals($this->user->id, $post['user_id']);
+            $this->assertEquals($this->user->id, $post['user']['id']);
         }
     }
 }

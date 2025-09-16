@@ -41,21 +41,24 @@ class UsersApiTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
+            'message',
             'data' => [
-                '*' => [
-                    'id',
-                    'name',
-                    'email',
-                    'phone',
-                    'address',
-                    'created_at',
-                    'updated_at'
+                'data' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'email',
+                        'phone',
+                        'address',
+                        'created_at',
+                        'updated_at'
+                    ]
                 ]
             ]
         ]);
 
         // Should include all users (original user + admin + 3 created = 5 total)
-        $this->assertCount(5, $response->json('data'));
+        $this->assertCount(5, $response->json('data.data'));
     }
 
     /** @test */

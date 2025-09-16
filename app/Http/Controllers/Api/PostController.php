@@ -18,11 +18,11 @@ class PostController extends Controller
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Post::with('user');
+        $query = Post::with('user')->where('user_id', $request->user()->id);
 
-        // Filter by authenticated user if requested
-        if ($request->query('my_posts')) {
-            $query->where('user_id', auth()->id());
+        // Filter by status if provided
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
         }
 
         $posts = $query->latest('datepost')->paginate(10);
@@ -39,7 +39,8 @@ class PostController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'datepost' => $request->datepost,
-            'user_id' => auth()->id(),
+            'status' => $request->status ?? 'draft',
+            'user_id' => $request->user()->id,
         ]);
 
         return new PostResource($post->load('user'));
@@ -59,7 +60,7 @@ class PostController extends Controller
     public function update(UpdatePostRequest $request, Post $post): PostResource
     {
         // Check if user owns the post
-        if ($post->user_id !== auth()->id()) {
+        if ($post->user_id !== $request->user()->id) {
             abort(403, 'Unauthorized');
         }
 
@@ -74,12 +75,12 @@ class PostController extends Controller
     public function destroy(Post $post): JsonResponse
     {
         // Check if user owns the post
-        if ($post->user_id !== auth()->id()) {
+        if ($post->user_id !== request()->user()->id) {
             abort(403, 'Unauthorized');
         }
 
         $post->delete();
 
-        return response()->json(['message' => 'Post deleted successfully']);
+        return response()->json(null, 204);
     }
 }

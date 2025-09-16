@@ -25,6 +25,7 @@ class UpdatePostRequest extends FormRequest
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
             'datepost' => 'sometimes|required|date_format:Y-m-d H:i:s',
+            'status' => 'sometimes|required|string|in:draft,published',
         ];
     }
 

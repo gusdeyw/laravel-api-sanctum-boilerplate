@@ -34,7 +34,7 @@ class WeatherController extends Controller
             return response()->json([
                 'status' => 'error',
                 'data' => null,
-                'message' => 'Invalid location parameter. ' . $validator->errors()->first(),
+                'message' => 'Invalid location parameter.',
             ], 422);
         }
 
@@ -69,7 +69,7 @@ class WeatherController extends Controller
             return response()->json([
                 'status' => 'error',
                 'data' => null,
-                'message' => 'Invalid location parameter. ' . $validator->errors()->first(),
+                'message' => 'Invalid location parameter.',
             ], 422);
         }
 

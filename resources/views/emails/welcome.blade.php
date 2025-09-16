@@ -124,6 +124,16 @@
             <p><strong>Registration Date:</strong> {{ $user->created_at->format('F j, Y \a\t g:i A') }}</p>
         </div>
 
+        <div class="features">
+            <h3>What you can do with your account:</h3>
+            <ul>
+                <li>Access our secure API endpoints</li>
+                <li>Create and manage blog posts</li>
+                <li>Manage your profile information</li>
+                <li>Get weather data for any location</li>
+            </ul>
+        </div>
+
         <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
 
         <div class="footer">
