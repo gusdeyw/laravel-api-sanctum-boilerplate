@@ -25,16 +25,16 @@ class WelcomeEmailTest extends TestCase
             'address' => '123 Main St, City, Country'
         ]);
 
-        // Send the welcome email
+        // Send the welcome email (will be queued since WelcomeEmail implements ShouldQueue)
         Mail::to($user)->send(new WelcomeEmail($user));
 
-        // Assert that the email was sent
-        Mail::assertSent(WelcomeEmail::class, function ($mail) use ($user) {
+        // Assert that the email was queued
+        Mail::assertQueued(WelcomeEmail::class, function ($mail) use ($user) {
             return $mail->user->id === $user->id;
         });
 
-        // Assert that exactly one email was sent
-        Mail::assertSent(WelcomeEmail::class, 1);
+        // Assert that exactly one email was queued
+        Mail::assertQueued(WelcomeEmail::class, 1);
     }
 
     public function test_welcome_email_has_correct_subject(): void
@@ -127,17 +127,17 @@ class WelcomeEmailTest extends TestCase
         // Create multiple users
         $users = User::factory()->count(3)->create();
 
-        // Send welcome emails to all users
+        // Queue welcome emails to all users
         foreach ($users as $user) {
-            Mail::to($user)->send(new WelcomeEmail($user));
+            Mail::to($user)->queue(new WelcomeEmail($user));
         }
 
-        // Assert that 3 emails were sent
-        Mail::assertSent(WelcomeEmail::class, 3);
+        // Assert that 3 emails were queued
+        Mail::assertQueued(WelcomeEmail::class, 3);
 
         // Assert each user received their email
         foreach ($users as $user) {
-            Mail::assertSent(WelcomeEmail::class, function ($mail) use ($user) {
+            Mail::assertQueued(WelcomeEmail::class, function ($mail) use ($user) {
                 return $mail->user->id === $user->id;
             });
         }
