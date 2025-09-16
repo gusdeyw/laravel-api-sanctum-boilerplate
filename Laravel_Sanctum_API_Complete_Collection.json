@@ -1,0 +1,1715 @@
+{
+    "info": {
+        "_postman_id": "laravel-sanctum-complete-api",
+        "name": "Laravel Sanctum API - Complete Collection",
+        "description": "Complete API collection for Laravel Sanctum authentication with Users, Posts, and Weather endpoints",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "12345678"
+    },
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{auth_token}}",
+                "type": "string"
+            }
+        ]
+    },
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Set base URL if not already set",
+                    "if (!pm.collectionVariables.get('base_url')) {",
+                    "    pm.collectionVariables.set('base_url', 'http://localhost:8000');",
+                    "}"
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Global test to check response time",
+                    "pm.test('Response time is less than 5000ms', function () {",
+                    "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+                    "});",
+                    "",
+                    "// Global test to check content type for JSON responses",
+                    "if (pm.response.headers.get('Content-Type')) {",
+                    "    pm.test('Content-Type includes application/json', function () {",
+                    "        pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                    "    });",
+                    "}"
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000",
+            "type": "string"
+        },
+        {
+            "key": "auth_token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "user_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "created_user_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "created_post_id",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Register User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "// Test response structure",
+                                    "pm.test(\"Response has required fields\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('message');",
+                                    "    pm.expect(responseJson).to.have.property('user');",
+                                    "    pm.expect(responseJson).to.have.property('access_token');",
+                                    "    pm.expect(responseJson).to.have.property('token_type');",
+                                    "});",
+                                    "",
+                                    "// Save token and user ID for other requests",
+                                    "if (pm.response.code === 201) {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.collectionVariables.set('auth_token', responseJson.access_token);",
+                                    "    pm.collectionVariables.set('user_id', responseJson.user.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main Street, City, State 12345\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "register"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test response structure",
+                                    "pm.test(\"Response has required fields\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('message');",
+                                    "    pm.expect(responseJson).to.have.property('user');",
+                                    "    pm.expect(responseJson).to.have.property('access_token');",
+                                    "    pm.expect(responseJson).to.have.property('token_type');",
+                                    "});",
+                                    "",
+                                    "// Save token and user ID for other requests",
+                                    "if (pm.response.code === 200) {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.collectionVariables.set('auth_token', responseJson.access_token);",
+                                    "    pm.collectionVariables.set('user_id', responseJson.user.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "login"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Current User Profile",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test response structure",
+                                    "pm.test(\"Response has user data\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('id');",
+                                    "    pm.expect(responseJson).to.have.property('name');",
+                                    "    pm.expect(responseJson).to.have.property('email');",
+                                    "    pm.expect(responseJson).to.not.have.property('password');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/user",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "user"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logout User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test logout message",
+                                    "pm.test(\"Logout successful\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson.message).to.include('Logged out');",
+                                    "});",
+                                    "",
+                                    "// Clear token after logout",
+                                    "pm.collectionVariables.set('auth_token', '');"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/logout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "logout"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "User Management",
+            "item": [
+                {
+                    "name": "List All Users",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test pagination structure",
+                                    "pm.test(\"Response has pagination structure\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('data');",
+                                    "    pm.expect(responseJson).to.have.property('links');",
+                                    "    pm.expect(responseJson).to.have.property('meta');",
+                                    "});",
+                                    "",
+                                    "// Test users data structure",
+                                    "pm.test(\"Users data structure is correct\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    if (responseJson.data.length > 0) {",
+                                    "        const user = responseJson.data[0];",
+                                    "        pm.expect(user).to.have.property('id');",
+                                    "        pm.expect(user).to.have.property('name');",
+                                    "        pm.expect(user).to.have.property('email');",
+                                    "        pm.expect(user).to.not.have.property('password');",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users?per_page=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ],
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Number of users per page"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create New User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "// Test response structure",
+                                    "pm.test(\"Response has user data\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('message');",
+                                    "    pm.expect(responseJson).to.have.property('user');",
+                                    "});",
+                                    "",
+                                    "// Save created user ID",
+                                    "if (pm.response.code === 201) {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.collectionVariables.set('created_user_id', responseJson.user.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Jane Smith\",\n    \"email\": \"jane.smith@example.com\",\n    \"phone\": \"+0987654321\",\n    \"address\": \"456 Oak Avenue, Another City, State 54321\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/users",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get User by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test user data structure",
+                                    "pm.test(\"Response has user data\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('user');",
+                                    "    pm.expect(responseJson.user).to.have.property('id');",
+                                    "    pm.expect(responseJson.user).to.have.property('name');",
+                                    "    pm.expect(responseJson.user).to.have.property('email');",
+                                    "    pm.expect(responseJson.user).to.not.have.property('password');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users/{{created_user_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "{{created_user_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test response structure",
+                                    "pm.test(\"Response has updated user data\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('message');",
+                                    "    pm.expect(responseJson).to.have.property('user');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Jane Smith Updated\",\n    \"email\": \"jane.smith.updated@example.com\",\n    \"phone\": \"+1122334455\",\n    \"address\": \"789 Pine Street, Updated City, State 67890\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/users/{{created_user_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "{{created_user_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test deletion message",
+                                    "pm.test(\"Delete successful\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson.message).to.include('deleted');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users/{{created_user_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "{{created_user_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Post Management",
+            "item": [
+                {
+                    "name": "List All Posts",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test posts data structure",
+                                    "pm.test(\"Response has posts data\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('data');",
+                                    "    if (responseJson.data.length > 0) {",
+                                    "        const post = responseJson.data[0];",
+                                    "        pm.expect(post).to.have.property('id');",
+                                    "        pm.expect(post).to.have.property('title');",
+                                    "        pm.expect(post).to.have.property('description');",
+                                    "        pm.expect(post).to.have.property('user');",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/posts",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "List My Posts Only",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test that posts belong to current user",
+                                    "pm.test(\"Posts belong to current user\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    const currentUserId = pm.collectionVariables.get('user_id');",
+                                    "    if (responseJson.data.length > 0) {",
+                                    "        responseJson.data.forEach(post => {",
+                                    "            pm.expect(post.user.id.toString()).to.equal(currentUserId.toString());",
+                                    "        });",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/posts?my_posts=true",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts"
+                            ],
+                            "query": [
+                                {
+                                    "key": "my_posts",
+                                    "value": "true",
+                                    "description": "Filter to show only current user's posts"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create New Post",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "// Test response structure",
+                                    "pm.test(\"Response has post data\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('data');",
+                                    "    pm.expect(responseJson.data).to.have.property('id');",
+                                    "    pm.expect(responseJson.data).to.have.property('title');",
+                                    "    pm.expect(responseJson.data).to.have.property('description');",
+                                    "});",
+                                    "",
+                                    "// Save created post ID",
+                                    "if (pm.response.code === 201) {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.collectionVariables.set('created_post_id', responseJson.data.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"My First Blog Post\",\n    \"description\": \"This is the content of my first blog post. It contains detailed information about the topic I want to share with my readers. The post covers various aspects and provides valuable insights.\",\n    \"datepost\": \"2024-12-01 10:30:00\",\n    \"status\": \"published\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/posts",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Post by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test post data structure",
+                                    "pm.test(\"Response has post data\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('data');",
+                                    "    pm.expect(responseJson.data).to.have.property('id');",
+                                    "    pm.expect(responseJson.data).to.have.property('title');",
+                                    "    pm.expect(responseJson.data).to.have.property('description');",
+                                    "    pm.expect(responseJson.data).to.have.property('user');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/posts/{{created_post_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "{{created_post_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Post",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test response structure",
+                                    "pm.test(\"Response has updated post data\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('data');",
+                                    "    pm.expect(responseJson.data).to.have.property('id');",
+                                    "    pm.expect(responseJson.data).to.have.property('title');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"My Updated Blog Post\",\n    \"description\": \"This is the updated content of my blog post. I've added more information and improved the overall quality of the content to provide better value to my readers.\",\n    \"datepost\": \"2024-12-02 14:30:00\",\n    \"status\": \"published\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/posts/{{created_post_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "{{created_post_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Post",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test deletion message",
+                                    "pm.test(\"Delete successful\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson.message).to.include('deleted');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/posts/{{created_post_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "{{created_post_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Filter Posts by Status",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test that all posts have the correct status",
+                                    "pm.test(\"Posts have correct status\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    if (responseJson.data.length > 0) {",
+                                    "        responseJson.data.forEach(post => {",
+                                    "            pm.expect(post.status).to.equal('published');",
+                                    "        });",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/posts?status=published",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts"
+                            ],
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "published",
+                                    "description": "Filter posts by status (draft or published)"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Weather API",
+            "item": [
+                {
+                    "name": "Get Current Weather (Default Location)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test weather data structure",
+                                    "pm.test(\"Response has weather data\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('status');",
+                                    "    pm.expect(responseJson).to.have.property('data');",
+                                    "    pm.expect(responseJson).to.have.property('message');",
+                                    "    pm.expect(responseJson).to.have.property('timestamp');",
+                                    "    ",
+                                    "    if (responseJson.status === 'success') {",
+                                    "        pm.expect(responseJson.data).to.have.property('location');",
+                                    "        pm.expect(responseJson.data).to.have.property('current');",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/weather",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "weather"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Weather for Specific Location",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test weather data for custom location",
+                                    "pm.test(\"Response has weather data for custom location\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('status');",
+                                    "    pm.expect(responseJson).to.have.property('data');",
+                                    "    ",
+                                    "    if (responseJson.status === 'success') {",
+                                    "        pm.expect(responseJson.data.location.name).to.include('London');",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/weather?location=London",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "weather"
+                            ],
+                            "query": [
+                                {
+                                    "key": "location",
+                                    "value": "London",
+                                    "description": "City name, coordinates, or airport code"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Clear Weather Cache (Default Location)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test cache clear response",
+                                    "pm.test(\"Response has cache clear data\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('status');",
+                                    "    pm.expect(responseJson).to.have.property('data');",
+                                    "    pm.expect(responseJson).to.have.property('message');",
+                                    "    pm.expect(responseJson.data).to.have.property('cache_cleared');",
+                                    "    pm.expect(responseJson.data).to.have.property('location');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/weather/cache",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "weather",
+                                "cache"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Clear Weather Cache for Specific Location",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Test cache clear for specific location",
+                                    "pm.test(\"Cache cleared for specific location\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson.data.location).to.equal('New York');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/weather/cache?location=New York",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "weather",
+                                "cache"
+                            ],
+                            "query": [
+                                {
+                                    "key": "location",
+                                    "value": "New York",
+                                    "description": "Location to clear cache for"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Error Testing & Validation",
+            "item": [
+                {
+                    "name": "Register - Validation Errors",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 422\", function () {",
+                                    "    pm.response.to.have.status(422);",
+                                    "});",
+                                    "",
+                                    "// Test validation error structure",
+                                    "pm.test(\"Response has validation errors\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('message');",
+                                    "    pm.expect(responseJson).to.have.property('errors');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"\",\n    \"email\": \"invalid-email\",\n    \"password\": \"123\",\n    \"password_confirmation\": \"456\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "register"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login - Invalid Credentials",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 401\", function () {",
+                                    "    pm.response.to.have.status(401);",
+                                    "});",
+                                    "",
+                                    "// Test error message",
+                                    "pm.test(\"Response has error message\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('message');",
+                                    "    pm.expect(responseJson.message).to.include('Invalid credentials');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"wrong@example.com\",\n    \"password\": \"wrongpassword\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "login"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Unauthorized Access - No Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 401\", function () {",
+                                    "    pm.response.to.have.status(401);",
+                                    "});",
+                                    "",
+                                    "// Test unauthenticated message",
+                                    "pm.test(\"Response indicates unauthenticated\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson.message).to.include('Unauthenticated');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Post Creation - Validation Errors",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 422\", function () {",
+                                    "    pm.response.to.have.status(422);",
+                                    "});",
+                                    "",
+                                    "// Test validation error structure",
+                                    "pm.test(\"Response has validation errors\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('message');",
+                                    "    pm.expect(responseJson).to.have.property('errors');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"\",\n    \"description\": \"\",\n    \"datepost\": \"invalid-date\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/posts",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Weather - Invalid Location",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 422\", function () {",
+                                    "    pm.response.to.have.status(422);",
+                                    "});",
+                                    "",
+                                    "// Test validation error for location",
+                                    "pm.test(\"Response has location validation error\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('message');",
+                                    "    pm.expect(responseJson.message).to.include('Invalid location');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/weather?location=x",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "weather"
+                            ],
+                            "query": [
+                                {
+                                    "key": "location",
+                                    "value": "x",
+                                    "description": "Invalid location (too short)"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Resource Not Found - User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 404\", function () {",
+                                    "    pm.response.to.have.status(404);",
+                                    "});",
+                                    "",
+                                    "// Test not found message",
+                                    "pm.test(\"Response indicates not found\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('message');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users/99999",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "99999"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Resource Not Found - Post",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Test response status",
+                                    "pm.test(\"Status code is 404\", function () {",
+                                    "    pm.response.to.have.status(404);",
+                                    "});",
+                                    "",
+                                    "// Test not found message",
+                                    "pm.test(\"Response indicates not found\", function () {",
+                                    "    const responseJson = pm.response.json();",
+                                    "    pm.expect(responseJson).to.have.property('message');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/posts/99999",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "99999"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
+}
